@@ -1,0 +1,1081 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset=utf8>
+<meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Misturas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0">
+<style>
+:root {
+  --bg:#F2F6F1; --bg2:#BED2BA; --surface:#FFFFFF;
+  --fg:#2D3826; --fg2:#6A7A5A; --fg3:#8DAF9B;
+  --primary:#AAC4BC; --primary-lt:#E5EFED; --primary-fg:#2D3826;
+  --accent:#AAC4BC; --accent-lt:#E5EFED; --accent-fg:#2D3826;
+  --warn:#A0742A; --warn-lt:#F0E8D2;
+  --red:#8B3030; --green:#2A7A42;
+  --border:#BED2BA; --shadow:0 2px 14px rgba(45,56,38,.12);
+  --r:22px; --rs:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#141A12; --bg2:#1E2A1A; --surface:#222E1E;
+    --fg:#D7EBD2; --fg2:#BED2BA; --fg3:#6A7A5A;
+    --primary:#8DAF9B; --primary-lt:#1A2E22; --primary-fg:#141A12;
+    --accent:#AAC4BC; --accent-lt:#142420; --accent-fg:#141A12;
+    --warn:#D4A044; --warn-lt:#281E08;
+    --red:#E05050; --green:#40C870;
+    --border:#2A3A26; --shadow:0 2px 14px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141A12; --bg2:#1E2A1A; --surface:#222E1E;
+  --fg:#D7EBD2; --fg2:#BED2BA; --fg3:#6A7A5A;
+  --primary:#8DAF9B; --primary-lt:#1A2E22; --primary-fg:#141A12;
+  --accent:#AAC4BC; --accent-lt:#142420; --accent-fg:#141A12;
+  --warn:#D4A044; --warn-lt:#281E08;
+  --red:#E05050; --green:#40C870;
+  --border:#2A3A26; --shadow:0 2px 14px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box;}
+[hidden]{display:none!important;}
+body{
+  font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  background:var(--bg); color:var(--fg); margin:0; min-height:100dvh;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-bottom:max(32px,env(safe-area-inset-bottom,0px));
+}
+body::before{
+  content:""; position:fixed; inset:0 0 auto;
+  height:env(safe-area-inset-top,0px); z-index:110; background:var(--bg);
+}
+
+/* HEADER */
+.hdr{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:100;
+  background:var(--bg); color:var(--fg);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px 8px;
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  padding-left:max(20px,env(safe-area-inset-left,0px));
+  padding-right:max(20px,env(safe-area-inset-right,0px));
+}
+.hdr h1{margin:0;font-size:1.3rem;font-weight:700;letter-spacing:-.02em;color:var(--primary);}
+.hdr-sub{font-size:0.72rem;color:var(--fg3);}
+
+/* TABS */
+.tabs{
+  position:sticky; top:calc(env(safe-area-inset-top,0px) + 54px); z-index:90;
+  display:flex; gap:6px; background:var(--bg);
+  padding:4px 0 12px;
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.tab{
+  flex:1; padding:9px 6px;
+  font-family:inherit; font-size:0.78rem; font-weight:600; letter-spacing:.01em;
+  background:var(--surface); border:1.5px solid var(--border); border-radius:20px;
+  color:var(--fg2); cursor:pointer; transition:all .15s;
+}
+.tab.on{background:var(--primary);color:var(--primary-fg);border-color:var(--primary);}
+.tab:hover:not(.on){background:var(--bg2);color:var(--fg);}
+
+/* PANELS */
+.panel{display:none;padding-top:16px;}
+.panel.on{display:block;}
+
+/* SECTION HEADER */
+.sec-hdr{
+  display:inline-block;
+  margin:20px 0 10px;
+  font-size:0.63rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--primary); background:var(--primary-lt);
+  padding:5px 14px; border-radius:20px;
+}
+.sec-hdr:first-of-type{margin-top:4px;}
+
+/* TOP BAR */
+.bar{display:flex;gap:8px;align-items:center;margin-bottom:12px;}
+.search{
+  flex:1; padding:10px 12px;
+  border:1.5px solid var(--border); border-radius:var(--rs);
+  background:var(--surface); color:var(--fg);
+  font-family:inherit; font-size:0.875rem; outline:none;
+  transition:border-color .15s; min-width:0;
+}
+.search::placeholder{color:var(--fg3);}
+.search:focus{border-color:var(--primary);}
+
+/* CARDS */
+.grid{display:flex;flex-direction:column;gap:10px;}
+.card{
+  background:var(--surface); border:none;
+  border-radius:var(--r);
+  padding:16px 18px 14px; box-shadow:var(--shadow);
+}
+
+.cname-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.cname-in{
+  flex:1; font-family:inherit; font-size:1rem; font-weight:700; color:var(--fg);
+  background:transparent; border:none; border-bottom:1.5px solid transparent;
+  padding:0 0 1px; outline:none; transition:border-color .15s; min-width:0;
+}
+.cname-in:focus{border-bottom-color:var(--primary);}
+
+/* difficulty pill — tap to cycle */
+.diff-pill{
+  font-size:0.6rem; font-weight:700; letter-spacing:.04em;
+  padding:4px 10px; border-radius:20px; flex-shrink:0;
+  cursor:pointer; user-select:none; transition:all .15s;
+  white-space:nowrap;
+}
+.diff-pill.d1{background:var(--primary-lt);color:var(--primary);}
+.diff-pill.d2{background:var(--warn-lt);color:var(--warn);}
+.diff-pill.d3{background:#FDECEA;color:var(--red);}
+
+.cbase-row{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.cbase-lbl{font-size:0.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg3);flex-shrink:0;}
+.cbase-in{
+  flex:1; font-family:inherit; font-size:0.8rem; color:var(--fg);
+  background:transparent; border:none; border-bottom:1px dashed var(--border);
+  padding:0 0 1px; outline:none; min-width:0; transition:border-color .15s;
+}
+.cbase-in:focus{border-bottom-color:var(--primary);border-bottom-style:solid;}
+.cqty-in{
+  width:54px; font-family:inherit; font-size:0.8rem; font-weight:600; color:var(--fg);
+  background:var(--bg); border:1.5px solid var(--border); border-radius:5px;
+  padding:3px 6px; outline:none; text-align:right; transition:border-color .15s; flex-shrink:0;
+}
+.cqty-in:focus{border-color:var(--primary);}
+.unit-tog{display:flex;border:1.5px solid var(--border);border-radius:5px;overflow:hidden;flex-shrink:0;background:var(--bg);}
+.utb{
+  padding:3px 8px;font-family:inherit;font-size:0.72rem;font-weight:700;
+  background:none;border:none;color:var(--fg3);cursor:pointer;transition:all .12s;line-height:1.6;
+}
+.utb+.utb{border-left:1px solid var(--border);}
+.utb.on{background:var(--primary);color:var(--primary-fg);}
+
+.cbot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.rende-row{display:flex;align-items:center;gap:5px;}
+.rende-lbl{font-size:0.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--fg3);}
+
+/* STEPPER */
+.stepper{display:flex;align-items:center;}
+.step-btn{
+  width:28px;height:28px; border:1.5px solid var(--border); background:var(--surface);
+  color:var(--fg2); font-size:1rem; font-family:inherit; font-weight:500;
+  cursor:pointer; display:flex;align-items:center;justify-content:center;
+  transition:background .1s,color .1s; line-height:1; flex-shrink:0;
+}
+.step-btn:first-child{border-radius:5px 0 0 5px;}
+.step-btn:last-child{border-radius:0 5px 5px 0;}
+.step-btn:hover:not(:disabled){background:var(--bg2);color:var(--fg);}
+.step-btn:disabled{opacity:.35;cursor:default;}
+.step-val{
+  min-width:30px; height:28px;
+  border-top:1.5px solid var(--border); border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem; font-weight:700; font-variant-numeric:tabular-nums;
+  background:var(--bg); color:var(--fg);
+}
+.step-unit{font-size:0.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--fg3);margin-left:3px;}
+
+/* TOGGLE */
+.solo-tog{display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none;margin-left:auto;}
+.solo-lbl{font-size:0.72rem;font-weight:600;color:var(--fg2);white-space:nowrap;}
+.track{
+  width:28px;height:15px;border-radius:8px;background:var(--border);
+  position:relative;flex-shrink:0;transition:background .15s;
+}
+.track.on{background:var(--primary);}
+.track::after{
+  content:"";position:absolute;left:2px;top:2px;
+  width:11px;height:11px;border-radius:50%;background:white;
+  transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2);
+}
+.track.on::after{left:15px;}
+
+.del-btn{
+  background:none;border:none;cursor:pointer;padding:5px;border-radius:6px;
+  color:var(--fg3);transition:color .15s,background .15s;line-height:1;flex-shrink:0;
+}
+.del-btn:hover{color:var(--red);background:rgba(191,48,37,.08);}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:inherit;font-weight:600;font-size:0.875rem;
+  border-radius:20px;border:none;padding:10px 18px;
+  cursor:pointer;transition:opacity .15s;white-space:nowrap;flex-shrink:0;
+}
+.btn-p{background:var(--primary);color:var(--primary-fg);}
+.btn-p:hover{opacity:.85;}
+.btn-a{background:var(--accent);color:var(--accent-fg);}
+.btn-a:hover{opacity:.85;}
+.btn-s{background:var(--surface);color:var(--fg);border:1.5px solid var(--border);}
+.btn-s:hover{background:var(--bg2);}
+.btn-sm{padding:7px 11px;font-size:0.78rem;}
+
+/* PLANNER */
+.phead{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:10px;margin-bottom:16px;flex-wrap:wrap;
+}
+.slots-wrap{flex:1;min-width:180px;}
+.slots-row{display:flex;align-items:baseline;gap:6px;margin-bottom:5px;}
+.slots-num{
+  font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums;
+  line-height:1;color:var(--primary);
+}
+.slots-of{font-size:0.75rem;font-weight:600;color:var(--fg3);}
+.slots-msg{font-size:0.72rem;font-weight:600;margin-bottom:8px;}
+.slots-msg.ok{color:var(--green);}
+.slots-msg.over{color:var(--red);}
+.slots-msg.under{color:var(--accent);}
+.prog-bar{height:6px;border-radius:3px;background:var(--border);overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;background:var(--primary);transition:width .3s ease;max-width:100%;}
+.prog-fill.over{background:var(--red);}
+
+.plan-hint{
+  font-size:0.65rem;color:var(--fg3);margin-top:4px;
+  letter-spacing:.01em;
+}
+
+.menu-list{display:flex;flex-direction:column;gap:8px;}
+.menu-empty{text-align:center;padding:32px 16px;color:var(--fg3);font-size:0.875rem;}
+
+.mitem{
+  background:var(--surface);border:none;
+  border-radius:var(--r);
+  padding:14px 16px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:8px;
+}
+
+.mitem-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.mitem-name{font-size:0.95rem;font-weight:600;line-height:1.3;}
+.mitem-base{font-size:0.72rem;color:var(--fg3);margin-top:2px;}
+.mitem-diff{
+  font-size:0.6rem;font-weight:700;letter-spacing:.04em;
+  padding:2px 7px;border-radius:20px;flex-shrink:0;white-space:nowrap;
+}
+.mitem-diff.d1{background:var(--primary-lt);color:var(--primary);}
+.mitem-diff.d2{background:var(--warn-lt);color:var(--warn);}
+.mitem-diff.d3{background:#FDECEA;color:var(--red);}
+
+.mitem-bot{display:flex;align-items:center;gap:8px;}
+.swap-btn{
+  margin-left:auto;background:none;border:1.5px solid var(--border);border-radius:var(--rs);
+  cursor:pointer;color:var(--fg2);font-size:0.72rem;font-weight:600;font-family:inherit;
+  padding:5px 10px;display:flex;align-items:center;gap:4px;
+  transition:background .15s,color .15s;flex-shrink:0;
+}
+.swap-btn:hover{background:var(--bg2);color:var(--fg);}
+
+/* SHOPPING */
+.shead{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:8px;margin-bottom:16px;flex-wrap:wrap;
+}
+.shead strong{display:block;font-size:0.95rem;margin-bottom:2px;}
+.shead small{font-size:0.78rem;color:var(--fg2);}
+.semp{text-align:center;padding:48px 24px;color:var(--fg3);}
+.semp .material-symbols-rounded{font-size:2.5rem;display:block;margin-bottom:12px;}
+.semp p{margin:4px 0;font-size:0.875rem;}
+.sitem{
+  display:flex;align-items:center;gap:10px;padding:14px 16px;
+  background:var(--surface);border:none;border-radius:var(--r);
+  margin-bottom:8px;transition:opacity .15s;box-shadow:var(--shadow);
+}
+.sitem.done{opacity:.38;}
+.sitem input[type="checkbox"]{width:18px;height:18px;flex-shrink:0;accent-color:var(--primary);cursor:pointer;}
+.sname{flex:1;min-width:0;font-size:0.9rem;font-weight:500;}
+.sitem.done .sname{text-decoration:line-through;}
+.sqty{font-size:0.8rem;font-weight:700;color:var(--fg2);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+/* MODAL */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;
+  display:flex;align-items:flex-end;justify-content:center;
+}
+@media(min-width:600px){.overlay{align-items:center;}}
+.modal{
+  background:var(--surface);border-radius:var(--r) var(--r) 0 0;
+  width:100%;max-width:540px;max-height:85dvh;overflow-y:auto;
+  padding:28px 24px;
+  padding-bottom:max(32px,env(safe-area-inset-bottom,0px));
+}
+@media(min-width:600px){.modal{border-radius:var(--r);}}
+.mtitle{font-size:1.1rem;font-weight:700;margin:0 0 20px;}
+.fg{margin-bottom:15px;}
+.flbl{
+  display:block;font-size:0.63rem;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;color:var(--fg2);margin-bottom:7px;
+}
+.finput{
+  width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:var(--rs);
+  font-family:inherit;font-size:0.95rem;background:var(--bg);color:var(--fg);
+  outline:none;transition:border-color .15s;
+}
+.finput:focus{border-color:var(--primary);background:var(--surface);}
+.frow{display:flex;gap:10px;}
+.frow .fg{flex:1;}
+.seg{
+  display:flex;border:1.5px solid var(--border);border-radius:var(--rs);
+  overflow:hidden;background:var(--bg);
+}
+.sgo{
+  flex:1;padding:9px 4px;font-family:inherit;font-size:0.78rem;font-weight:600;
+  background:none;border:none;color:var(--fg2);cursor:pointer;text-align:center;transition:all .12s;
+}
+.sgo+.sgo{border-left:1px solid var(--border);}
+.sgo.on{background:var(--primary);color:var(--primary-fg);}
+.fbase-row{display:flex;gap:8px;}
+.fbase-row .finput{flex:1;}
+.fqty{width:72px;flex-shrink:0;}
+.funit{width:52px;flex-shrink:0;}
+.mrende{display:flex;align-items:center;gap:10px;}
+.mrende .step-btn{width:34px;height:34px;font-size:1.1rem;}
+.mrende .step-val{min-width:38px;height:34px;font-size:0.95rem;}
+.rende-hint{font-size:0.72rem;color:var(--fg3);}
+.mact{display:flex;gap:8px;margin-top:20px;}
+.mact .btn{flex:1;justify-content:center;}
+
+.material-symbols-rounded{
+  font-family:'Material Symbols Rounded';
+  font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;
+  font-size:1.1rem;line-height:1;display:inline-block;
+  vertical-align:-0.18em;user-select:none;
+}
+.empty{text-align:center;padding:24px 16px;color:var(--fg3);font-size:0.875rem;}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <h1>Misturas</h1>
+  <span class="hdr-sub" id="hct"></span>
+</header>
+
+<nav class="tabs">
+  <button class="tab on" data-t="list">Lista</button>
+  <button class="tab" data-t="planner">Cardápio</button>
+  <button class="tab" data-t="shopping">Compras</button>
+</nav>
+
+<!-- LISTA -->
+<section class="panel on" id="p-list">
+  <div class="bar">
+    <input class="search" id="q" type="search" placeholder="Buscar mistura…">
+    <button class="btn btn-p" id="btn-add"><span class="material-symbols-rounded">add</span> Nova</button>
+  </div>
+  <div class="sec-hdr">Almoço / Janta</div>
+  <div class="grid" id="grid-almoco"></div>
+  <div class="sec-hdr">Lanche / Pré-treino</div>
+  <div class="grid" id="grid-lanche"></div>
+</section>
+
+<!-- CARDÁPIO -->
+<section class="panel" id="p-planner">
+  <div class="phead">
+    <div class="slots-wrap">
+      <div class="slots-row">
+        <span class="slots-num" id="slots-n">0</span>
+        <span class="slots-of">/ 12 slots</span>
+      </div>
+      <div class="slots-msg under" id="slots-msg">Cardápio vazio</div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="plan-hint">Seg janta e Qui janta fixos · Difícil só Sex–Dom</div>
+    </div>
+    <button class="btn btn-a" id="btn-rand"><span class="material-symbols-rounded">shuffle</span> Aleatorizar</button>
+  </div>
+  <div class="menu-list" id="menu-list"></div>
+  <button class="btn btn-s" id="btn-add-menu" hidden style="width:100%;justify-content:center;margin-top:10px;">
+    <span class="material-symbols-rounded">add</span> Adicionar prato
+  </button>
+</section>
+
+<!-- COMPRAS -->
+<section class="panel" id="p-shopping">
+  <div class="shead">
+    <div>
+      <strong>Lista de compras</strong>
+      <small id="ssub">Baseado no cardápio</small>
+    </div>
+    <button class="btn btn-s btn-sm" id="btn-clr">
+      <span class="material-symbols-rounded">remove_done</span> Desmarcar
+    </button>
+  </div>
+  <div id="slist"></div>
+</section>
+
+<datalist id="bases-dl"></datalist>
+
+<!-- MODAL: Nova mistura -->
+<div class="overlay" id="m-add" hidden>
+  <div class="modal">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div class="mtitle" style="margin:0;">Nova mistura</div>
+      <button id="btn-mx" style="background:none;border:none;cursor:pointer;padding:6px;border-radius:6px;color:var(--fg3);line-height:1;" aria-label="Fechar">
+        <span class="material-symbols-rounded" style="font-size:1.4rem;">close</span>
+      </button>
+    </div>
+
+    <div class="fg">
+      <label class="flbl" for="f-name">Nome</label>
+      <input class="finput" id="f-name" placeholder="Ex: Carne moída – Macarrão">
+    </div>
+
+    <div class="frow">
+      <div class="fg">
+        <div class="flbl">Categoria</div>
+        <div class="seg" id="f-cat">
+          <button class="sgo on" data-v="almoco">Almoço</button>
+          <button class="sgo" data-v="lanche">Lanche</button>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="flbl">Dificuldade</div>
+        <div class="seg" id="f-diff">
+          <button class="sgo on" data-v="1">Fácil</button>
+          <button class="sgo" data-v="2">Médio</button>
+          <button class="sgo" data-v="3">Difícil</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fg">
+      <label class="flbl">Ingrediente principal + quantidade</label>
+      <div class="fbase-row">
+        <input class="finput" id="f-base" placeholder="Ex: carne moída" list="bases-dl">
+        <input class="finput fqty" id="f-qty" type="number" placeholder="600" min="0">
+        <div class="unit-tog" id="f-unit-tog" style="align-self:stretch;">
+          <button class="utb on" data-u="g">g</button>
+          <button class="utb" data-u="un">un</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="frow">
+      <div class="fg">
+        <div class="flbl">Rende (slots)</div>
+        <div class="mrende">
+          <div class="stepper">
+            <button class="step-btn" id="f-rend-m">−</button>
+            <div class="step-val" id="f-rend-v">2</div>
+            <button class="step-btn" id="f-rend-p">+</button>
+          </div>
+          <span class="rende-hint" id="f-rend-hint">refeições</span>
+        </div>
+      </div>
+      <div class="fg">
+        <div class="flbl">Só pra mim?</div>
+        <div class="solo-tog" id="f-solo-wrap" style="margin-left:0;margin-top:8px;">
+          <div class="track" id="f-solo-track"></div>
+          <span class="solo-lbl" id="f-solo-lbl">2 pessoas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mact">
+      <button class="btn btn-s" id="btn-mc">Cancelar</button>
+      <button class="btn btn-p" id="btn-ms">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TARGET = 12;
+const DL = ['','Fácil','Médio','Difícil'];
+const DC = ['','d1','d2','d3'];
+
+const DEFAULTS = [
+  {id:1,  name:"Bife",                       cat:"almoco",diff:1,solo:false,base:"contrafilé",         baseQty:800, baseUnit:"g",   rendimento:2},
+  {id:2,  name:"Picadinho com tomate",        cat:"almoco",diff:2,solo:false,base:"carne bovina picada",baseQty:800, baseUnit:"g",   rendimento:4},
+  {id:3,  name:"Picadinho com madeira",       cat:"almoco",diff:2,solo:false,base:"carne bovina picada",baseQty:800, baseUnit:"g",   rendimento:4},
+  {id:4,  name:"Picadinho tarê",              cat:"almoco",diff:2,solo:false,base:"carne bovina picada",baseQty:800, baseUnit:"g",   rendimento:4},
+  {id:5,  name:"Patê de atum",               cat:"almoco",diff:1,solo:false,base:"atum",               baseQty:1,   baseUnit:"lata",rendimento:2},
+  {id:6,  name:"Carne moída – Macarrão",     cat:"almoco",diff:1,solo:false,base:"carne moída",        baseQty:600, baseUnit:"g",   rendimento:4},
+  {id:7,  name:"Carne moída – Escondidinho", cat:"almoco",diff:2,solo:false,base:"carne moída",        baseQty:600, baseUnit:"g",   rendimento:4},
+  {id:8,  name:"Frango coxa airfryer",       cat:"almoco",diff:1,solo:false,base:"coxa de frango",     baseQty:8,   baseUnit:"un",  rendimento:4},
+  {id:9,  name:"Calabresa airfryer",         cat:"almoco",diff:1,solo:false,base:"linguiça calabresa", baseQty:600, baseUnit:"g",   rendimento:4},
+  {id:10, name:"Carne de porco no forno",    cat:"almoco",diff:2,solo:false,base:"carne de porco",     baseQty:800, baseUnit:"g",   rendimento:4},
+  {id:11, name:"Carne de porco frita",       cat:"almoco",diff:1,solo:false,base:"carne de porco",     baseQty:800, baseUnit:"g",   rendimento:2},
+  {id:12, name:"Carne de panela",            cat:"almoco",diff:2,solo:false,base:"acém ou músculo",    baseQty:1000,baseUnit:"g",   rendimento:6},
+  {id:13, name:"Mignon",                     cat:"almoco",diff:2,solo:false,base:"filé mignon",        baseQty:600, baseUnit:"g",   rendimento:2},
+  {id:14, name:"Ovo",                        cat:"almoco",diff:1,solo:true, base:"ovos",               baseQty:4,   baseUnit:"un",  rendimento:1},
+  {id:15, name:"Coração de galinha",         cat:"almoco",diff:1,solo:false,base:"coração de galinha", baseQty:800, baseUnit:"g",   rendimento:4},
+  {id:16, name:"Frango desfiado",            cat:"almoco",diff:1,solo:false,base:"peito de frango",    baseQty:800, baseUnit:"g",   rendimento:4},
+  {id:17, name:"À milanesa",                 cat:"almoco",diff:2,solo:false,base:"carne ou frango",    baseQty:800, baseUnit:"g",   rendimento:4},
+  {id:18, name:"Medalhão",                   cat:"almoco",diff:3,solo:false,base:"medalhão de filé",   baseQty:600, baseUnit:"g",   rendimento:2},
+  {id:19, name:"Frango cerveja c/ batata",   cat:"almoco",diff:2,solo:false,base:"coxa e sobrecoxa",   baseQty:1200,baseUnit:"g",   rendimento:4},
+  {id:20, name:"Lasanha",                    cat:"almoco",diff:3,solo:false,base:"carne moída",        baseQty:800, baseUnit:"g",   rendimento:6},
+  {id:21, name:"Hambúrguer",                 cat:"almoco",diff:2,solo:false,base:"carne moída blend",  baseQty:800, baseUnit:"g",   rendimento:4},
+];
+
+const SEED_V11 = [
+  {id:43, name:"Lombo suíno assado",      cat:"almoco", diff:2, solo:false, base:"carne moída", baseQty:600,  baseUnit:"g", rendimento:6},
+  {id:44, name:"Pão de batata recheado",  cat:"almoco", diff:3, solo:false, base:"carne moída", baseQty:400,  baseUnit:"g", rendimento:4},
+];
+
+const SEED_V10 = [
+  {id:42, name:"Peixe frito com cerveja", cat:"almoco", diff:3, solo:false, base:"filé de peixe", baseQty:600, baseUnit:"g", rendimento:2},
+];
+
+const SEED_V9 = [
+  {id:41, name:"Yakisoba", cat:"almoco", diff:1, solo:false, base:"carne bovina ou frango", baseQty:600, baseUnit:"g", rendimento:4},
+];
+
+const SEED_V8 = [
+  {id:40, name:"Galinhada", cat:"almoco", diff:2, solo:false, base:"frango inteiro", baseQty:1200, baseUnit:"g", rendimento:6},
+];
+
+const SEED_V7 = [
+  {id:38, name:"Pernil assado", cat:"almoco", diff:3, solo:false, base:"pernil suíno",  baseQty:1500, baseUnit:"g", rendimento:8},
+  {id:39, name:"Almôndegas",    cat:"almoco", diff:2, solo:false, base:"carne moída",   baseQty:600,  baseUnit:"g", rendimento:4},
+];
+
+const SEED_V6 = [
+  {id:32, name:"Nhoque",               cat:"almoco", diff:2, solo:false, base:"batata",        baseQty:800,  baseUnit:"g", rendimento:4},
+  {id:33, name:"Crepe de carne",        cat:"almoco", diff:2, solo:false, base:"carne moída",   baseQty:400,  baseUnit:"g", rendimento:4},
+  {id:34, name:"Crepe de frango",       cat:"almoco", diff:2, solo:false, base:"peito de frango",baseQty:400, baseUnit:"g", rendimento:4},
+  {id:35, name:"Beirute",               cat:"almoco", diff:3, solo:false, base:"carne assada",  baseQty:600,  baseUnit:"g", rendimento:4},
+  {id:36, name:"Fricassê de frango",    cat:"almoco", diff:2, solo:false, base:"peito de frango",baseQty:600, baseUnit:"g", rendimento:4},
+  {id:37, name:"Frango molho branco",   cat:"almoco", diff:2, solo:false, base:"peito de frango",baseQty:600, baseUnit:"g", rendimento:4},
+];
+
+const SEED_V5 = [
+  {id:31, name:"Frango à parmegiana", cat:"almoco", diff:3, solo:false, base:"peito de frango", baseQty:600, baseUnit:"g", rendimento:2},
+];
+
+const SEED_V4 = [
+  {id:28, name:"Carne moída – Tacos",  cat:"almoco", diff:1, solo:false, base:"carne moída", baseQty:600, baseUnit:"g", rendimento:4},
+  {id:29, name:"Carne moída – Pastel", cat:"almoco", diff:2, solo:false, base:"carne moída", baseQty:600, baseUnit:"g", rendimento:4},
+  {id:30, name:"Quibe assado",          cat:"almoco", diff:2, solo:false, base:"carne moída", baseQty:600, baseUnit:"g", rendimento:6},
+];
+
+const SEED_V3 = [
+  {id:25, name:"Costelinha de porco", cat:"almoco", diff:3, solo:false, base:"costelinha suína",  baseQty:1000, baseUnit:"g", rendimento:4},
+  {id:26, name:"Linguiça toscana",    cat:"almoco", diff:1, solo:false, base:"linguiça toscana", baseQty:600,  baseUnit:"g", rendimento:2},
+  {id:27, name:"Omelete",             cat:"almoco", diff:1, solo:true,  base:"ovos",              baseQty:3,    baseUnit:"un", rendimento:1},
+];
+
+const SEED_V2 = [
+  {id:22, name:"Frango grelhado",  cat:"almoco", diff:1, solo:false, base:"peito de frango", baseQty:600, baseUnit:"g", rendimento:2},
+  {id:23, name:"Tilápia grelhada", cat:"almoco", diff:1, solo:false, base:"filé de tilápia", baseQty:600, baseUnit:"g", rendimento:2},
+  {id:24, name:"Salmão no forno",  cat:"almoco", diff:2, solo:true,  base:"filé de salmão",  baseQty:300, baseUnit:"g", rendimento:2},
+];
+
+// STATE
+let S = (() => {
+  try { const d = localStorage.getItem('misturas-v8'); if (d) return JSON.parse(d); } catch(e) {}
+  return { items: JSON.parse(JSON.stringify(DEFAULTS)), nextId: 22, menu: [], checks: {} };
+})();
+function save() { try { localStorage.setItem('misturas-v8', JSON.stringify(S)); } catch(e) {} }
+
+SEED_V11.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V10.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V9.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V8.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V7.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V6.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V5.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V4.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V3.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+SEED_V2.forEach(item => {
+  if (!S.items.find(x => x.id === item.id)) {
+    S.items.push(item);
+    if (S.nextId <= item.id) S.nextId = item.id + 1;
+  }
+});
+save();
+
+// UI STATE
+let qry = '', mRend = 2, mSolo = false, mUnit = 'g';
+
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function totalSlots() { return S.menu.reduce((s,e) => s + e.slots, 0); }
+
+function fmtQty(qty, unit) {
+  if (!qty) return '';
+  if (unit === 'g' && qty >= 1000) {
+    const v = qty / 1000;
+    return (v % 1 === 0 ? v : v.toFixed(1)) + 'kg';
+  }
+  const q = qty % 1 === 0 ? qty : qty.toFixed(1);
+  return unit === 'un' ? `${q} un` : `${q}${unit}`;
+}
+
+// ── RENDER ──
+
+function renderAll() {
+  renderList(); renderPlanner(); renderShopping();
+  const bases = [...new Set(S.items.map(x => x.base).filter(Boolean))].sort((a,b) => a.localeCompare(b,'pt-BR'));
+  document.getElementById('bases-dl').innerHTML = bases.map(b => `<option value="${esc(b)}">`).join('');
+  const a = S.items.filter(x => x.cat === 'almoco').length;
+  const l = S.items.filter(x => x.cat === 'lanche').length;
+  document.getElementById('hct').textContent = `${a} pratos · ${l} lanches`;
+}
+
+function cardHTML(m) {
+  return `<div class="card" data-cid="${m.id}">
+  <div class="cname-row">
+    <input class="cname-in" value="${esc(m.name)}" data-id="${m.id}" data-f="name">
+    <span class="diff-pill ${DC[m.diff]}" data-id="${m.id}" data-action="diff">${DL[m.diff]}</span>
+  </div>
+  <div class="cbase-row">
+    <span class="cbase-lbl">Base</span>
+    <input class="cbase-in" value="${esc(m.base||'')}" data-id="${m.id}" data-f="base" placeholder="ingrediente" list="bases-dl">
+    <input class="cqty-in" value="${m.baseQty||''}" data-id="${m.id}" data-f="qty" type="number" min="0">
+    <div class="unit-tog" data-id="${m.id}" data-action="unit">
+      <button class="utb${(m.baseUnit||'g')==='g'?' on':''}" data-u="g">g</button>
+      <button class="utb${(m.baseUnit||'g')==='un'?' on':''}" data-u="un">un</button>
+    </div>
+  </div>
+  <div class="cbot">
+    <div class="rende-row">
+      <span class="rende-lbl">Rende</span>
+      <div class="stepper">
+        <button class="step-btn" data-id="${m.id}" data-action="rend-" ${m.rendimento<=1?'disabled':''}>−</button>
+        <div class="step-val">${m.rendimento}</div>
+        <button class="step-btn" data-id="${m.id}" data-action="rend+" ${m.rendimento>=8?'disabled':''}>+</button>
+      </div>
+      <span class="step-unit">slots</span>
+    </div>
+    <div class="solo-tog" data-id="${m.id}" data-action="solo">
+      <div class="track${m.solo?' on':''}"></div>
+      <span class="solo-lbl">${m.solo?'Só pra mim':'2 pessoas'}</span>
+    </div>
+    <button class="del-btn" data-id="${m.id}" data-action="del">
+      <span class="material-symbols-rounded">delete</span>
+    </button>
+  </div>
+</div>`;
+}
+
+function renderList() {
+  const q = qry.toLowerCase();
+  const filt = m => !q || m.name.toLowerCase().includes(q) || (m.base||'').toLowerCase().includes(q);
+  const almoco = S.items.filter(m => m.cat==='almoco' && filt(m)).sort((a,b) => a.name.localeCompare(b.name,'pt-BR'));
+  const lanche = S.items.filter(m => m.cat==='lanche' && filt(m)).sort((a,b) => a.name.localeCompare(b.name,'pt-BR'));
+  document.getElementById('grid-almoco').innerHTML = almoco.length ? almoco.map(cardHTML).join('') : '<div class="empty">Nenhuma mistura</div>';
+  document.getElementById('grid-lanche').innerHTML = lanche.length ? lanche.map(cardHTML).join('') : '<div class="empty">Nenhum lanche — adicione com o botão Nova</div>';
+}
+
+function renderPlanner() {
+  const used = totalSlots();
+  const pct = Math.min(used / TARGET * 100, 100);
+  const over = used > TARGET, ok = used === TARGET;
+
+  document.getElementById('slots-n').textContent = used;
+  const fill = document.getElementById('prog-fill');
+  fill.style.width = pct + '%';
+  fill.classList.toggle('over', over);
+
+  const msg = document.getElementById('slots-msg');
+  if (!S.menu.length) {
+    msg.textContent = 'Clique em Aleatorizar para começar'; msg.className = 'slots-msg under';
+  } else if (ok) {
+    msg.textContent = '✓ Semana completa!'; msg.className = 'slots-msg ok';
+  } else if (over) {
+    msg.textContent = `${used-TARGET} slot${used-TARGET>1?'s':''} a mais`; msg.className = 'slots-msg over';
+  } else {
+    msg.textContent = `Faltam ${TARGET-used} slot${TARGET-used>1?'s':''}`; msg.className = 'slots-msg under';
+  }
+
+  document.getElementById('btn-add-menu').hidden = used >= TARGET;
+
+  const list = document.getElementById('menu-list');
+  if (!S.menu.length) {
+    list.innerHTML = '<div class="menu-empty">Nenhum prato no cardápio ainda</div>';
+    return;
+  }
+  list.innerHTML = S.menu.map((e,idx) => {
+    const p = S.items.find(x => x.id === e.pratoId);
+    if (!p) return '';
+    return `<div class="mitem${p.diff===3?' d3':''}" data-mi="${idx}">
+  <div class="mitem-top">
+    <div>
+      <div class="mitem-name">${esc(p.name)}</div>
+      ${p.base?`<div class="mitem-base">${esc(p.base)}</div>`:''}
+    </div>
+    <span class="mitem-diff ${DC[p.diff]}">${DL[p.diff]}</span>
+  </div>
+  <div class="mitem-bot">
+    <div class="stepper">
+      <button class="step-btn" data-mi="${idx}" data-action="ms-" ${e.slots<=1?'disabled':''}>−</button>
+      <div class="step-val">${e.slots}</div>
+      <button class="step-btn" data-mi="${idx}" data-action="ms+" ${e.slots>=8?'disabled':''}>+</button>
+    </div>
+    <span class="step-unit">slots</span>
+    <div class="solo-tog" data-mi="${idx}" data-action="msolo">
+      <div class="track${e.solo?' on':''}"></div>
+      <span class="solo-lbl">${e.solo?'Só pra mim':'2 pessoas'}</span>
+    </div>
+    <button class="swap-btn" data-mi="${idx}">
+      <span class="material-symbols-rounded">shuffle</span> Trocar
+    </button>
+  </div>
+</div>`;
+  }).join('');
+}
+
+function renderShopping() {
+  const c = document.getElementById('slist');
+  const sub = document.getElementById('ssub');
+
+  if (!S.menu.length) {
+    c.innerHTML = `<div class="semp"><span class="material-symbols-rounded">shopping_cart</span><p><strong>Cardápio ainda não gerado</strong></p><p>Vá em Cardápio e clique em Aleatorizar</p></div>`;
+    sub.textContent = 'Baseado no cardápio';
+    return;
+  }
+
+  const map = {};
+  S.menu.forEach(e => {
+    const p = S.items.find(x => x.id === e.pratoId);
+    if (!p || !p.base || !p.baseQty) return;
+    const key = p.base.toLowerCase().trim();
+    const qty = p.baseQty * (e.solo ? 0.5 : 1);
+    if (!map[key]) map[key] = { name: p.base, qty: 0, unit: p.baseUnit||'' };
+    map[key].qty += qty;
+  });
+
+  const entries = Object.values(map).sort((a,b) => a.name.localeCompare(b.name,'pt-BR'));
+  const uniq = new Set(S.menu.map(e => e.pratoId)).size;
+  sub.textContent = `${uniq} prato${uniq!==1?'s':''} · ${totalSlots()} slots`;
+
+  if (!entries.length) { c.innerHTML = '<div class="empty">Nenhum ingrediente</div>'; return; }
+
+  c.innerHTML = entries.map(item => {
+    const ck = `s_${item.name.toLowerCase().replace(/[^a-z0-9]/g,'_')}`;
+    const done = !!S.checks[ck];
+    const qStr = item.qty ? fmtQty(item.qty, item.unit) : '';
+    const label = item.name.charAt(0).toUpperCase() + item.name.slice(1);
+    return `<div class="sitem${done?' done':''}">
+  <input type="checkbox" id="${esc(ck)}" ${done?'checked':''} data-ck="${esc(ck)}">
+  <label class="sname" for="${esc(ck)}">${esc(label)}</label>
+  ${qStr?`<span class="sqty">${esc(qStr)}</span>`:''}
+</div>`;
+  }).join('');
+}
+
+// ── MENU GENERATION ──
+
+function genMenu() {
+  const pool = S.items.filter(m => m.cat === 'almoco');
+  if (!pool.length) return [];
+  const easy = pool.filter(m => m.diff <= 2);
+  const menu = [];
+  let wd = 6, we = 6; // weekday slots, weekend slots
+
+  for (const p of shuffle([...easy])) {
+    if (wd <= 0) break;
+    const slots = Math.min(p.rendimento, wd);
+    menu.push({ pratoId: p.id, slots, solo: p.solo });
+    wd -= slots;
+  }
+
+  const usedWd = new Set(menu.map(e => e.pratoId));
+  const wePool = shuffle(pool.filter(p => !usedWd.has(p.id)));
+  const fallback = shuffle([...pool]);
+  const src = wePool.length ? wePool : fallback;
+  for (const p of src) {
+    if (we <= 0) break;
+    const slots = Math.min(p.rendimento, we);
+    menu.push({ pratoId: p.id, slots, solo: p.solo });
+    we -= slots;
+  }
+  return menu;
+}
+
+function swapEntry(idx) {
+  const e = S.menu[idx];
+  const curP = S.items.find(x => x.id === e.pratoId);
+  const usedIds = new Set(S.menu.map(x => x.pratoId));
+  const allowHard = curP && curP.diff === 3;
+  let pool = S.items.filter(m => m.cat==='almoco' && m.id !== e.pratoId && (allowHard || m.diff<=2));
+  if (!pool.length) pool = S.items.filter(m => m.cat==='almoco' && m.id !== e.pratoId);
+  const unused = pool.filter(p => !usedIds.has(p.id));
+  const src = unused.length ? unused : pool;
+  if (!src.length) return;
+  const pick = src[Math.floor(Math.random() * src.length)];
+  S.menu[idx] = { pratoId: pick.id, slots: Math.min(pick.rendimento, e.slots || pick.rendimento), solo: pick.solo };
+}
+
+// ── EVENTS ──
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('on'));
+  t.classList.add('on');
+  document.getElementById('p-' + t.dataset.t).classList.add('on');
+}));
+
+document.getElementById('q').addEventListener('input', ev => { qry = ev.target.value.trim(); renderList(); });
+document.getElementById('btn-add').addEventListener('click', openAdd);
+document.getElementById('btn-rand').addEventListener('click', () => {
+  S.menu = genMenu(); S.checks = {}; save(); renderPlanner(); renderShopping();
+});
+
+// List: clicks (delegated to both grids)
+function onListClick(ev) {
+  const pill = ev.target.closest('.diff-pill[data-action="diff"]');
+  if (pill) {
+    const id = +pill.dataset.id;
+    const m = S.items.find(x => x.id === id); if (!m) return;
+    m.diff = m.diff === 3 ? 1 : m.diff + 1;
+    save();
+    pill.className = `diff-pill ${DC[m.diff]}`;
+    pill.textContent = DL[m.diff];
+    return;
+  }
+  const step = ev.target.closest('.step-btn[data-action][data-id]');
+  if (step) {
+    const id = +step.dataset.id, m = S.items.find(x => x.id === id); if (!m) return;
+    if (step.dataset.action === 'rend-') m.rendimento = Math.max(1, m.rendimento - 1);
+    if (step.dataset.action === 'rend+') m.rendimento = Math.min(8, m.rendimento + 1);
+    save();
+    const st = step.closest('.stepper');
+    st.querySelector('.step-val').textContent = m.rendimento;
+    st.querySelectorAll('.step-btn').forEach(b => {
+      if (b.dataset.action==='rend-') b.disabled = m.rendimento<=1;
+      if (b.dataset.action==='rend+') b.disabled = m.rendimento>=8;
+    });
+    return;
+  }
+  const unitTog = ev.target.closest('.utb[data-u]');
+  if (unitTog && unitTog.closest('.unit-tog[data-action="unit"]')) {
+    const tog = unitTog.closest('.unit-tog');
+    const id = +tog.dataset.id, u = unitTog.dataset.u;
+    const m = S.items.find(x => x.id === id); if (!m) return;
+    m.baseUnit = u; save();
+    tog.querySelectorAll('.utb').forEach(b => b.classList.toggle('on', b.dataset.u === u));
+    return;
+  }
+  const solo = ev.target.closest('.solo-tog[data-action="solo"]');
+  if (solo) {
+    const id = +solo.dataset.id, m = S.items.find(x => x.id === id); if (!m) return;
+    m.solo = !m.solo; save();
+    solo.querySelector('.track').classList.toggle('on', m.solo);
+    solo.querySelector('.solo-lbl').textContent = m.solo ? 'Só pra mim' : '2 pessoas';
+    return;
+  }
+  const del = ev.target.closest('.del-btn[data-action="del"]');
+  if (del) {
+    const id = +del.dataset.id;
+    if (del.dataset.conf === '1') {
+      S.items = S.items.filter(x => x.id !== id);
+      S.menu = S.menu.filter(e => e.pratoId !== id);
+      save(); renderAll();
+    } else {
+      const orig = del.innerHTML;
+      del.innerHTML = '<span class="material-symbols-rounded">check</span>';
+      del.dataset.conf = '1'; del.style.color = 'var(--red)';
+      setTimeout(() => { try { del.innerHTML = orig; del.dataset.conf = ''; del.style.color = ''; } catch(e){} }, 2500);
+    }
+  }
+}
+
+function onListFocusout(ev) {
+  const el = ev.target;
+  if (!el.dataset.id || !el.dataset.f) return;
+  const m = S.items.find(x => x.id === +el.dataset.id); if (!m) return;
+  const f = el.dataset.f;
+  if (f === 'name') { const v = el.value.trim(); if (v) m.name = v; else el.value = m.name; }
+  else if (f === 'base') m.base = el.value.trim();
+  else if (f === 'qty') { const v = parseFloat(el.value); if (!isNaN(v) && v > 0) m.baseQty = v; }
+  save();
+}
+
+['grid-almoco','grid-lanche'].forEach(id => {
+  document.getElementById(id).addEventListener('click', onListClick);
+  document.getElementById(id).addEventListener('focusout', onListFocusout);
+});
+
+// Planner clicks
+document.getElementById('menu-list').addEventListener('click', ev => {
+  const step = ev.target.closest('.step-btn[data-action][data-mi]');
+  if (step) {
+    const idx = +step.dataset.mi, e = S.menu[idx]; if (!e) return;
+    if (step.dataset.action==='ms-') e.slots = Math.max(1, e.slots-1);
+    if (step.dataset.action==='ms+') e.slots = Math.min(8, e.slots+1);
+    save(); renderPlanner(); renderShopping(); return;
+  }
+  const solo = ev.target.closest('.solo-tog[data-action="msolo"]');
+  if (solo) {
+    const idx = +solo.dataset.mi, e = S.menu[idx]; if (!e) return;
+    e.solo = !e.solo; save(); renderPlanner(); renderShopping(); return;
+  }
+  const swap = ev.target.closest('.swap-btn[data-mi]');
+  if (swap) { swapEntry(+swap.dataset.mi); save(); renderPlanner(); renderShopping(); }
+});
+
+// Shopping
+document.getElementById('slist').addEventListener('change', ev => {
+  const cb = ev.target.closest('input[type="checkbox"][data-ck]');
+  if (cb) { S.checks[cb.dataset.ck] = cb.checked; save(); cb.closest('.sitem').classList.toggle('done', cb.checked); }
+});
+document.getElementById('btn-clr').addEventListener('click', () => { S.checks = {}; save(); renderShopping(); });
+
+// Modal
+function openAdd() {
+  mRend = 2; mSolo = false;
+  document.getElementById('f-name').value = '';
+  setSeg('f-cat','almoco'); setSeg('f-diff','1');
+  document.getElementById('f-base').value = '';
+  document.getElementById('f-qty').value = '';
+  mUnit = 'g';
+  document.querySelectorAll('#f-unit-tog .utb').forEach(b => b.classList.toggle('on', b.dataset.u === 'g'));
+  updMRend(); updMSolo();
+  document.getElementById('m-add').hidden = false;
+  setTimeout(() => document.getElementById('f-name').focus(), 50);
+}
+function setSeg(id, val) { document.querySelectorAll(`#${id} .sgo`).forEach(o => o.classList.toggle('on', o.dataset.v===val)); }
+function getSeg(id) { const o = document.querySelector(`#${id} .sgo.on`); return o ? o.dataset.v : null; }
+function updMRend() {
+  document.getElementById('f-rend-v').textContent = mRend;
+  document.getElementById('f-rend-m').disabled = mRend <= 1;
+  document.getElementById('f-rend-p').disabled = mRend >= 8;
+  document.getElementById('f-rend-hint').textContent = mRend === 1 ? 'refeição' : 'refeições';
+}
+function updMSolo() {
+  document.getElementById('f-solo-track').classList.toggle('on', mSolo);
+  document.getElementById('f-solo-lbl').textContent = mSolo ? 'Só pra mim' : '2 pessoas';
+}
+
+document.querySelectorAll('#m-add .seg').forEach(seg => seg.addEventListener('click', ev => {
+  const o = ev.target.closest('.sgo'); if (!o) return;
+  seg.querySelectorAll('.sgo').forEach(x => x.classList.remove('on')); o.classList.add('on');
+}));
+document.getElementById('f-solo-wrap').addEventListener('click', () => { mSolo = !mSolo; updMSolo(); });
+document.getElementById('f-rend-m').addEventListener('click', () => { if (mRend>1) { mRend--; updMRend(); } });
+document.getElementById('f-unit-tog').addEventListener('click', ev => {
+  const b = ev.target.closest('.utb[data-u]'); if (!b) return;
+  mUnit = b.dataset.u;
+  document.querySelectorAll('#f-unit-tog .utb').forEach(x => x.classList.toggle('on', x.dataset.u === mUnit));
+});
+document.getElementById('f-rend-p').addEventListener('click', () => { if (mRend<8) { mRend++; updMRend(); } });
+const closeModal = () => { document.getElementById('m-add').hidden = true; };
+document.getElementById('btn-add-menu').addEventListener('click', () => {
+  const usedIds = new Set(S.menu.map(e => e.pratoId));
+  const remaining = TARGET - totalSlots();
+  let pool = S.items.filter(m => m.cat === 'almoco' && !usedIds.has(m.id));
+  if (!pool.length) pool = S.items.filter(m => m.cat === 'almoco');
+  if (!pool.length) return;
+  const p = pool[Math.floor(Math.random() * pool.length)];
+  S.menu.push({ pratoId: p.id, slots: Math.min(p.rendimento, remaining), solo: p.solo });
+  save(); renderPlanner(); renderShopping();
+});
+
+document.getElementById('btn-mc').addEventListener('click', closeModal);
+document.getElementById('btn-mx').addEventListener('click', closeModal);
+document.getElementById('m-add').addEventListener('click', ev => {
+  if (ev.target === document.getElementById('m-add')) document.getElementById('m-add').hidden = true;
+});
+document.getElementById('btn-ms').addEventListener('click', () => {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { document.getElementById('f-name').focus(); return; }
+  S.items.push({
+    id: S.nextId++, name,
+    cat: getSeg('f-cat') || 'almoco',
+    diff: +getSeg('f-diff') || 1,
+    solo: mSolo,
+    base: document.getElementById('f-base').value.trim(),
+    baseQty: parseFloat(document.getElementById('f-qty').value) || 0,
+    baseUnit: mUnit,
+    rendimento: mRend
+  });
+  save(); renderAll();
+  document.getElementById('m-add').hidden = true;
+});
+
+// migração: rendimento 4 → 2, exceto lasanha (id 20)
+let migrated = false;
+S.items.forEach(m => {
+  if (m.rendimento === 4 && m.id !== 20) { m.rendimento = 2; migrated = true; }
+});
+if (migrated) save();
+
+renderAll();
+</script>
+</body>
+</html>
